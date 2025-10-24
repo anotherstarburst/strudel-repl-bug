@@ -1,43 +1,306 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strudel Pattern</title>
-    <script src="https://unpkg.com/@strudel/repl@1.2.2"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            background: #1a1a1a;
-            color: #fff;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        strudel-editor {
-            display: block;
-            max-width: 1200px;
-            margin: 0 auto;
-            height: 600px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Strudel Pattern</h1>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Strudel Pitch Discrepancy Bug Report</title>
 
-  <p>This pitch is higher</p>
-    <strudel-editor>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    "Helvetica Neue", Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 2rem 1rem;
+            }
+
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
+            }
+
+            header {
+                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+                color: white;
+                padding: 2rem;
+                text-align: center;
+            }
+
+            header h1 {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            header .subtitle {
+                font-size: 1rem;
+                opacity: 0.9;
+                font-weight: 300;
+            }
+
+            .content {
+                padding: 2rem;
+            }
+
+            .section {
+                margin-bottom: 3rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+                color: #2a5298;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid #667eea;
+            }
+
+            .description {
+                background: #f8f9fa;
+                padding: 1.5rem;
+                border-radius: 8px;
+                border-left: 4px solid #667eea;
+                margin-bottom: 2rem;
+            }
+
+            .test-case {
+                background: #fff9e6;
+                padding: 1.5rem;
+                border-radius: 8px;
+                border: 2px solid #ffc107;
+                margin-bottom: 1.5rem;
+            }
+
+            .test-case h3 {
+                color: #f57c00;
+                margin-bottom: 0.5rem;
+                font-size: 1.1rem;
+            }
+
+            .test-case p {
+                color: #666;
+                margin-bottom: 1rem;
+            }
+
+            .label {
+                display: inline-block;
+                background: #667eea;
+                color: white;
+                padding: 0.3rem 0.8rem;
+                border-radius: 4px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+            }
+
+            .label.issue {
+                background: #dc3545;
+            }
+
+            .label.expected {
+                background: #28a745;
+            }
+
+            strudel-editor {
+                margin: 1rem 0;
+                display: block;
+            }
+
+            .link-box {
+                background: #e8eaf6;
+                padding: 1rem;
+                border-radius: 8px;
+                margin-top: 1rem;
+            }
+
+            .link-box a {
+                color: #2a5298;
+                word-break: break-all;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .link-box a:hover {
+                text-decoration: underline;
+            }
+
+            .note {
+                background: #fff3cd;
+                border-left: 4px solid #ffc107;
+                padding: 1rem;
+                margin-top: 1.5rem;
+                border-radius: 4px;
+            }
+
+            .note strong {
+                color: #856404;
+            }
+
+            footer {
+                background: #f8f9fa;
+                padding: 1.5rem;
+                text-align: center;
+                color: #666;
+                font-size: 0.9rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>🐛 Strudel Pitch Discrepancy Bug Report</h1>
+                <p class="subtitle">
+                    Audio playback pitch differs between embedded REPL and
+                    strudel.cc
+                </p>
+            </header>
+
+            <div class="content">
+                <div class="description">
+                    <h2 style="margin-bottom: 1rem; color: #1e3c72">
+                        Issue Summary
+                    </h2>
+                    <p>
+                        When running the same Strudel pattern code, the embedded
+                        REPL (using <code>@strudel/repl@1.2.2</code>) produces
+                        audio at a <strong>higher pitch</strong> compared to
+                        running the identical pattern on
+                        <a href="https://strudel.cc" target="_blank"
+                            >strudel.cc</a
+                        >. This suggests a potential configuration difference
+                        affecting sample playback.
+                    </p>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Test Pattern</h2>
+                    <p>
+                        The following pattern is used to demonstrate the pitch
+                        difference:
+                    </p>
+                    <pre
+                        style="
+                            background: #f4f4f4;
+                            padding: 1rem;
+                            border-radius: 4px;
+                            overflow-x: auto;
+                        "
+                    ><code>setCps(103/60/4)
+
+"a, b".inhabit({
+    a: s("bd*4").n("2"),
+    b: s("sd*4").n("4").lpf(200)
+})</code></pre>
+                </div>
+
+                <div class="section">
+                    <div class="test-case">
+                        <span class="label issue">ISSUE - Higher Pitch</span>
+                        <h3>Embedded REPL Playback</h3>
+                        <p>
+                            Play the pattern below (Windows: <b>Ctrl</b> and
+                            <b>Enter</b>; Mac: <b>Option</b> and <b>Enter</b>).
+                            Notice the pitch of the kick drum (bd) and snare
+                            drum (sd).
+                        </p>
+                        <script src="https://unpkg.com/@strudel/repl@1.2.2"></script>
+                        <strudel-editor>
+                            <!--
 setCps(103/60/4)
 
 "a, b".inhabit({a: s("bd*4").n("2"), b: s("sd*4").n("4").lpf(200) })
-    </strudel-editor>
+-->
+                        </strudel-editor>
+                        <p>
+                            Using:
+                            <i>https://unpkg.com/@strudel/repl@1.2.2</i> as
+                            @latest is broken at the time of writing.
+                        </p>
+                        <p>
+                            In chrome, the pattern seems to get escaped by the
+                            <code>&lt;!-- --&gt;</code> so please copy/paste the
+                            Test Pattern above to see the bug in action.
+                        </p>
+                    </div>
 
-  <p>This pitch is lower</p>
-  <a href="https://strudel.cc/#c2V0Q3BzKDEwMy82MC80KQoKImEsIGIiLmluaGFiaXQoe2E6IHMoImJkKjQiKS5uKCIyIiksIGI6IHMoInNkKjQiKS5uKCI0IikubHBmKDIwMCkgfSk%3D" target="_blank">
-    https://strudel.cc/#c2V0Q3BzKDEwMy82MC80KQoKImEsIGIiLmluaGFiaXQoe2E6IHMoImJkKjQiKS5uKCIyIiksIGI6IHMoInNkKjQiKS5uKCI0IikubHBmKDIwMCkgfSk%3D
-  </a>
-</body>
+                    <div class="test-case">
+                        <span class="label expected"
+                            >EXPECTED - Lower Pitch</span
+                        >
+                        <h3>Strudel.cc Reference</h3>
+                        <p>
+                            Click the link below to open the
+                            <strong>identical pattern</strong> on strudel.cc.
+                            When you play it there, you'll hear that the drums
+                            are at a <strong>lower, different pitch</strong>
+                            compared to the embedded version above.
+                        </p>
+                        <div class="link-box">
+                            <strong>🔗 Reference URL:</strong><br />
+                            <a
+                                href="https://strudel.cc/#c2V0Q3BzKDEwMy82MC80KQoKImEsIGIiLmluaGFiaXQoe2E6IHMoImJkKjQiKS5uKCIyIiksIGI6IHMoInNkKjQiKS5uKCI0IikubHBmKDIwMCkgfSk%3D"
+                                target="_blank"
+                            >
+                                Open pattern on strudel.cc or play it in the
+                                iframe below
+                            </a>
+                            <script src="https://unpkg.com/@strudel/embed@latest"></script>
+                            <strudel-repl>
+                                <!--
+setCps(103/60/4)
+
+"a, b".inhabit({a: s("bd*4").n("2"), b: s("sd*4").n("4").lpf(200) })
+-->
+                            </strudel-repl>
+                            <p>
+                                Using:<i
+                                    >https://unpkg.com/@strudel/embed@latest</i
+                                >
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="note">
+                        <strong>⚠️ Note:</strong> The pitch difference is
+                        consistent and reproducible. The embedded REPL always
+                        plays at a higher pitch than the same code on
+                        strudel.cc, suggesting a systematic issue rather than
+                        random variance.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Environment Details</h2>
+                    <ul style="list-style-position: inside; color: #666">
+                        <li>
+                            <strong>Embedded REPL Version:</strong>
+                            @strudel/repl@1.2.2 (via unpkg CDN)
+                        </li>
+                        <li>
+                            <strong>Reference Platform:</strong> strudel.cc
+                            (latest web version)
+                        </li>
+                        <li>
+                            <strong>Browser:</strong> Firefox v144.0; Chrome
+                            v141.0.7390.122
+                        </li>
+                        <li>
+                            <strong>Date Reported:</strong> October 24, 2025
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
